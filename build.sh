@@ -4,7 +4,7 @@ from collections import defaultdict
 
 ROOT = pathlib.Path(".")
 POSTS = ROOT / "content" / "posts"
-OUT = ROOT / "public"
+OUT = ROOT / "docs"
 OUT.mkdir(exist_ok=True)
 
 MD = markdown.Markdown(extensions=["extra", "sane_lists", "nl2br"])
