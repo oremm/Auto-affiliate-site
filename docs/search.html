@@ -1,42 +1,199 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
-<title>Search</title>
+<meta charset="utf-8">
+<title>Search — Tech Blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="Search Tech Blog posts">
+<link rel="canonical" href="https://oremm.github.io/Tech-Blog/">
+<link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
+
+<!-- OpenGraph -->
+<meta property="og:title" content="Search">
+<meta property="og:site_name" content="Tech Blog">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://oremm.github.io/Tech-Blog/">
+<meta property="og:description" content="Search Tech Blog posts">
+
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Search">
+<meta name="twitter:description" content="Search Tech Blog posts">
+
+
 <style>
-body { font-family: system-ui; padding:20px; background:#0b1220; color:#fff }
-input { width:100%; padding:12px; font-size:18px; border-radius:8px; border:1px solid #444 }
-.result { margin:18px 0; padding:18px; border-radius:12px; background:#111a2b }
-a { color:#87d0ff; text-decoration:none }
+:root {
+  --bg: #0b1220;
+  --fg: #ffffff;
+  --card: #111a2b;
+  --accent: #87d0ff;
+}
+[data-theme='light'] {
+  --bg: #f8f8f8;
+  --fg: #111111;
+  --card: #ffffff;
+  --accent: #005bbb;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+a { color: var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+.wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 18px 18px 32px;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.nav-left a {
+  margin-right: 14px;
+}
+.nav-left strong {
+  font-size: 1.1rem;
+}
+
+button.theme {
+  background: transparent;
+  border: 1px solid var(--accent);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--accent);
+  cursor: pointer;
+}
+button.theme:hover {
+  background: rgba(135, 208, 255, 0.1);
+}
+
+.card {
+  background: var(--card);
+  padding: 22px 22px 20px;
+  border-radius: 18px;
+  margin: 18px 0;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  font-size: 1.7rem;
+}
+h2 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-size: 1.3rem;
+}
+
+.banner {
+  width: 100%;
+  border-radius: 16px;
+  margin: 10px 0 18px;
+}
+
+footer.small {
+  opacity: 0.8;
+}
+
+.post-meta {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-bottom: 0.4rem;
+}
+
+.archive-list p {
+  margin: 0.3rem 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: transparent;
+  color: var(--fg);
+  outline: none;
+  margin-bottom: 14px;
+}
 </style>
-</head>
-<body>
-
-<h1>Search</h1>
-<input id="q" placeholder="Type to search...">
-
-<div id="results"></div>
 
 <script>
-let index = [];
-fetch("search.json").then(r=>r.json()).then(d=>index=d);
-
-document.getElementById("q").addEventListener("input", e => {
-  const q = e.target.value.toLowerCase();
-  let out = "";
-  if (q.length > 2) {
-    index.forEach(p => {
-      if (p.title.toLowerCase().includes(q) ||
-          p.content.toLowerCase().includes(q)) {
-        out += `<div class='result'>
-                 <a href='${p.slug}.html'><h3>${p.title}</h3></a>
-               </div>`;
-      }
-    });
-  }
-  document.getElementById("results").innerHTML = out;
+function toggleTheme() {
+  const root = document.documentElement;
+  const current = root.getAttribute("data-theme") || "dark";
+  const next = current === "light" ? "dark" : "light";
+  root.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("theme");
+  if (saved) document.documentElement.setAttribute("data-theme", saved);
 });
 </script>
 
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="nav-left">
+    <a href="index.html"><strong>Tech Blog</strong></a>
+    <a href="latest.html">Latest</a>
+    <a href="archive.html">Archive</a>
+    <a href="search.html">Search</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme" onclick="toggleTheme()">Theme</button>
+  </div>
+</nav>
+
+<div class="card">
+<h1>Search</h1>
+<input id="q" class="search-input" placeholder="Type to search... (min 3 chars)">
+<div id="results"></div>
+<script>
+let indexData = [];
+fetch("search.json").then(r => r.json()).then(d => indexData = d);
+
+const q = document.getElementById("q");
+const resultsDiv = document.getElementById("results");
+
+q.addEventListener("input", e => {
+  const term = e.target.value.toLowerCase().trim();
+  if (term.length < 3) {
+    resultsDiv.innerHTML = "";
+    return;
+  }
+  let out = "";
+  indexData.forEach(p => {
+    if (p.title.toLowerCase().includes(term) || p.content.toLowerCase().includes(term)) {
+      out += `<div class='card'><h2><a href='${p.slug}.html'>${p.title}</a></h2></div>`;
+    }
+  });
+  resultsDiv.innerHTML = out || "<p>No results.</p>";
+});
+</script>
+
+</div>
+
+<div class="card">
+  <footer class="small">© 2025 Tech Blog</footer>
+</div>
+
+</div>
 </body>
 </html>

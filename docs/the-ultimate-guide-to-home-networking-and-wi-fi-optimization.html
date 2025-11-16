@@ -1,20 +1,168 @@
-<!doctype html><html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>The Ultimate Guide to Home Networking and Wi-Fi Optimization — Tech-Blog</title>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Ultimate Guide to Home Networking and Wi-Fi Optimization — Tech Blog</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="description" content="In our increasingly digital world, a solid home networking setup is not just a luxury; it&#x27;s a necessity. Whether you&#x27;re working from home, streaming your favorite shows, or...">
+<link rel="canonical" href="https://oremm.github.io/Tech-Blog/the-ultimate-guide-to-home-networking-and-wi-fi-optimization.html">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
+
+<!-- OpenGraph -->
+<meta property="og:title" content="The Ultimate Guide to Home Networking and Wi-Fi Optimization">
+<meta property="og:site_name" content="Tech Blog">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://oremm.github.io/Tech-Blog/the-ultimate-guide-to-home-networking-and-wi-fi-optimization.html">
+<meta property="og:description" content="In our increasingly digital world, a solid home networking setup is not just a luxury; it&#x27;s a necessity. Whether you&#x27;re working from home, streaming your favorite shows, or...">
+<meta property="og:image" content="null">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="The Ultimate Guide to Home Networking and Wi-Fi Optimization">
+<meta name="twitter:description" content="In our increasingly digital world, a solid home networking setup is not just a luxury; it&#x27;s a necessity. Whether you&#x27;re working from home, streaming your favorite shows, or...">
+<meta name="twitter:image" content="null">
+
 <style>
-:root{--bg:#0b1220;--card:#111a2b;--fg:#fff;--link:#87d0ff}
-html,body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Arial}
-.wrap{max-width:860px;margin:0 auto;padding:28px}
-a{color:var(--link);text-decoration:none} a:hover{text-decoration:underline}
-.card{background:var(--card);border-radius:16px;padding:24px;margin:16px 0;line-height:1.6}
-h1,h2{margin:0 0 .6rem}
-.nav{display:flex;gap:16px;align-items:center;margin-bottom:8px}
-footer small{opacity:.85}
+:root {
+  --bg: #0b1220;
+  --fg: #ffffff;
+  --card: #111a2b;
+  --accent: #87d0ff;
+}
+[data-theme='light'] {
+  --bg: #f8f8f8;
+  --fg: #111111;
+  --card: #ffffff;
+  --accent: #005bbb;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}
+a { color: var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+.wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 18px 18px 32px;
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
+}
+.nav-left a {
+  margin-right: 14px;
+}
+.nav-left strong {
+  font-size: 1.1rem;
+}
+
+button.theme {
+  background: transparent;
+  border: 1px solid var(--accent);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--accent);
+  cursor: pointer;
+}
+button.theme:hover {
+  background: rgba(135, 208, 255, 0.1);
+}
+
+.card {
+  background: var(--card);
+  padding: 22px 22px 20px;
+  border-radius: 18px;
+  margin: 18px 0;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  font-size: 1.7rem;
+}
+h2 {
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-size: 1.3rem;
+}
+
+.banner {
+  width: 100%;
+  border-radius: 16px;
+  margin: 10px 0 18px;
+}
+
+footer.small {
+  opacity: 0.8;
+}
+
+.post-meta {
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-bottom: 0.4rem;
+}
+
+.archive-list p {
+  margin: 0.3rem 0;
+}
+
+.search-input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: transparent;
+  color: var(--fg);
+  outline: none;
+  margin-bottom: 14px;
+}
 </style>
-</head><body><div class="wrap">
-  <div class="nav"><a href="index.html"><strong>Tech-Blog</strong></a> <a href="rss.xml">RSS</a></div>
-  <div class="card"><h1>The Ultimate Guide to Home Networking and Wi-Fi Optimization</h1>
+
+<script>
+function toggleTheme() {
+  const root = document.documentElement;
+  const current = root.getAttribute("data-theme") || "dark";
+  const next = current === "light" ? "dark" : "light";
+  root.setAttribute("data-theme", next);
+  localStorage.setItem("theme", next);
+}
+document.addEventListener("DOMContentLoaded", () => {
+  const saved = localStorage.getItem("theme");
+  if (saved) document.documentElement.setAttribute("data-theme", saved);
+});
+</script>
+
+</head>
+<body>
+<div class="wrap">
+
+<nav>
+  <div class="nav-left">
+    <a href="index.html"><strong>Tech Blog</strong></a>
+    <a href="latest.html">Latest</a>
+    <a href="archive.html">Archive</a>
+    <a href="search.html">Search</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme" onclick="toggleTheme()">Theme</button>
+  </div>
+</nav>
+
+<div class="card">
+<h1>The Ultimate Guide to Home Networking and Wi-Fi Optimization</h1><div class="post-meta">2025-11-16</div><img class="banner" src="null" alt="The Ultimate Guide to Home Networking and Wi-Fi Optimization">
 <p>In our increasingly digital world, a solid home networking setup is not just a luxury; it's a necessity. Whether you're working from home, streaming your favorite shows, or engaging in online gaming, having a reliable and fast internet connection can make all the difference. In this post, we will explore how to optimize your home network and the essential gadgets you should consider to enhance your Wi-Fi experience.</p>
 <h3>Understanding Your Internet Connection</h3>
 <p>Before you can optimize your network, it’s vital to understand the basics of your internet connection. Many homes today rely on broadband, which is typically delivered via cable or fiber optics. The speed of your connection can vary based on your internet service provider (ISP) and the plan you’re subscribed to. To get the most out of your home network, consider upgrading to a plan that suits your usage—higher speeds translate to better performance for multiple devices.</p>
@@ -46,6 +194,13 @@ footer small{opacity:.85}
 <p>Optimizing your home network may seem daunting, but with the right tools and knowledge, anyone can achieve a reliable, fast internet connection. Investing in a quality router, strategically placing your device, and ensuring that you have the right gadgets can elevate your home network experience. Don't forget to explore options like the <a target="_blank" rel="nofollow noopener" href="https://www.amazon.com/dp/B08HDVGRH6?tag=swiseman10-20">Linksys Dual Band Wi-Fi 6 Router</a>, which provides robust performance for all your needs.</p>
 <p>By following these tips, you can enjoy seamless connectivity throughout your home, no matter how many devices you have connected!</p>
 <p><strong>DALL·E Prompt:</strong> A modern home office setup featuring a sleek desktop computer, various gadgets including a Wi-Fi router, network switch, and mesh Wi-Fi system, with a warm ambiance and a cozy atmosphere.<br />
-<img alt="The Ultimate Guide to Home Networking and Wi-Fi Optimization" src="null" /></p></div>
-  <footer class="card"><small>© 2025 Tech-Blog</small></footer>
-</div></body></html>
+<img alt="The Ultimate Guide to Home Networking and Wi-Fi Optimization" src="null" /></p>
+</div>
+
+<div class="card">
+  <footer class="small">© 2025 Tech Blog</footer>
+</div>
+
+</div>
+</body>
+</html>

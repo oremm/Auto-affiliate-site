@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 import pathlib, datetime, re, markdown, json, shutil, html
 
-# ----- PATHS -----
 ROOT = pathlib.Path(__file__).resolve().parent
 POSTS = ROOT / "content" / "posts"
 OUT = ROOT / "docs"
 
-# ----- MARKDOWN -----
 MD = markdown.Markdown(extensions=["extra", "sane_lists", "nl2br"])
 
-# ----- UTILITIES -----
 def slugify(title):
     s = title.lower()
     s = re.sub(r"[^a-z0-9\s-]", "", s)
@@ -19,12 +16,19 @@ def slugify(title):
 
 def extract_summary(html_body):
     text = re.sub("<[^<]+?>", "", html_body)
+    text = " ".join(text.split())
+    if len(text) <= 180:
+        return text
     return text[:180].rsplit(" ", 1)[0] + "..."
 
-# ----- HTML TEMPLATE (UPGRADED UI + SEO) -----
-def wrap(title, body, description="", image_url=""):
+def wrap(title, body, description="", image_url="", slug=""):
     year = datetime.date.today().year
-    canonical = f"https://oremm.github.io/Tech-Blog/{slugify(title)}.html"
+    base = "https://oremm.github.io/Tech-Blog"
+    canonical = f"{base}/{slug}.html" if slug else f"{base}/"
+
+    desc = html.escape(description or "Practical tech tips")
+    og_image = f'<meta property="og:image" content="{image_url}">' if image_url else ""
+    tw_image = f'<meta name="twitter:image" content="{image_url}">' if image_url else ""
 
     return f"""<!doctype html>
 <html lang="en">
@@ -33,7 +37,7 @@ def wrap(title, body, description="", image_url=""):
 <title>{title} — Tech Blog</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<meta name="description" content="{html.escape(description)}">
+<meta name="description" content="{desc}">
 <link rel="canonical" href="{canonical}">
 <link rel="alternate" type="application/rss+xml" title="RSS" href="rss.xml">
 
@@ -42,56 +46,129 @@ def wrap(title, body, description="", image_url=""):
 <meta property="og:site_name" content="Tech Blog">
 <meta property="og:type" content="article">
 <meta property="og:url" content="{canonical}">
-<meta property="og:description" content="{html.escape(description)}">
-{'<meta property="og:image" content="' + image_url + '">' if image_url else ''}
+<meta property="og:description" content="{desc}">
+{og_image}
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="{title}">
-<meta name="twitter:description" content="{html.escape(description)}">
-{'<meta name="twitter:image" content="' + image_url + '">' if image_url else ''}
+<meta name="twitter:description" content="{desc}">
+{tw_image}
 
 <style>
-body {{
-  margin: 0;
-  font-family: system-ui, Arial;
-  background: var(--bg);
-  color: var(--fg);
-}}
 :root {{
   --bg: #0b1220;
-  --fg: #fff;
+  --fg: #ffffff;
   --card: #111a2b;
   --accent: #87d0ff;
 }}
 [data-theme='light'] {{
   --bg: #f8f8f8;
-  --fg: #111;
+  --fg: #111111;
   --card: #ffffff;
   --accent: #005bbb;
 }}
-a {{ color: var(--accent); text-decoration:none }}
-a:hover {{ text-decoration:underline }}
-.wrap {{ max-width:860px; margin:0 auto; padding:26px }}
-.card {{ background:var(--card); padding:24px; border-radius:16px; margin:20px 0 }}
+
+* {{ box-sizing: border-box; }}
+body {{
+  margin: 0;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+}}
+a {{ color: var(--accent); text-decoration:none; }}
+a:hover {{ text-decoration:underline; }}
+
+.wrap {{
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 18px 18px 32px;
+}}
+
 nav {{
-  display:flex; justify-content:space-between; align-items:center;
-  margin-bottom:20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 12px;
 }}
+.nav-left a {{
+  margin-right: 14px;
+}}
+.nav-left strong {{
+  font-size: 1.1rem;
+}}
+
 button.theme {{
-  background:none; border:1px solid var(--accent); padding:6px 12px;
-  border-radius:8px; color:var(--accent); cursor:pointer;
+  background: transparent;
+  border: 1px solid var(--accent);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  color: var(--accent);
+  cursor: pointer;
 }}
-img.banner {{
-  width:100%; border-radius:16px; margin-bottom:20px;
+button.theme:hover {{
+  background: rgba(135, 208, 255, 0.1);
+}}
+
+.card {{
+  background: var(--card);
+  padding: 22px 22px 20px;
+  border-radius: 18px;
+  margin: 18px 0;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+}}
+
+h1 {{
+  margin-top: 0;
+  margin-bottom: 0.6rem;
+  font-size: 1.7rem;
+}}
+h2 {{
+  margin-top: 0;
+  margin-bottom: 0.4rem;
+  font-size: 1.3rem;
+}}
+
+.banner {{
+  width: 100%;
+  border-radius: 16px;
+  margin: 10px 0 18px;
+}}
+
+footer.small {{
+  opacity: 0.8;
+}}
+
+.post-meta {{
+  font-size: 0.8rem;
+  opacity: 0.85;
+  margin-bottom: 0.4rem;
+}}
+
+.archive-list p {{
+  margin: 0.3rem 0;
+}}
+
+.search-input {{
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  background: transparent;
+  color: var(--fg);
+  outline: none;
+  margin-bottom: 14px;
 }}
 </style>
 
 <script>
 function toggleTheme() {{
-  const current = document.documentElement.getAttribute("data-theme");
+  const root = document.documentElement;
+  const current = root.getAttribute("data-theme") || "dark";
   const next = current === "light" ? "dark" : "light";
-  document.documentElement.setAttribute("data-theme", next);
+  root.setAttribute("data-theme", next);
   localStorage.setItem("theme", next);
 }}
 document.addEventListener("DOMContentLoaded", () => {{
@@ -103,38 +180,49 @@ document.addEventListener("DOMContentLoaded", () => {{
 </head>
 <body>
 <div class="wrap">
+
 <nav>
-  <div><a href="index.html"><strong>Tech Blog</strong></a></div>
-  <button class="theme" onclick="toggleTheme()">Theme</button>
+  <div class="nav-left">
+    <a href="index.html"><strong>Tech Blog</strong></a>
+    <a href="latest.html">Latest</a>
+    <a href="archive.html">Archive</a>
+    <a href="search.html">Search</a>
+  </div>
+  <div class="nav-right">
+    <button class="theme" onclick="toggleTheme()">Theme</button>
+  </div>
 </nav>
 
 <div class="card">
 {body}
 </div>
 
-<footer class="card">
-  © {year} Tech Blog
-</footer>
+<div class="card">
+  <footer class="small">© {year} Tech Blog</footer>
+</div>
 
 </div>
 </body>
 </html>
 """
 
-# ----- PROCESS POSTS -----
 posts = []
-
 for p in POSTS.glob("*.md"):
-    raw = p.read_text()
+    raw = p.read_text().strip()
     lines = raw.split("\n")
-    title = lines[0].replace("#", "").strip()
-    slug = slugify(title)
-    body_html = MD.convert("\n".join(lines[1:]))
+    if not lines or not lines[0].startswith("# "):
+        continue
 
-    # Extract first image (featured banner)
+    title = lines[0][2:].strip()
+    slug = slugify(title)
+    body_md = "\n".join(lines[1:])
+    MD.reset()
+    body_html = MD.convert(body_md)
+
     img_match = re.search(r"!\[.*?\]\((.*?)\)", raw)
     image_url = img_match.group(1) if img_match else ""
 
+    date = datetime.datetime.fromtimestamp(p.stat().st_mtime)
     summary = extract_summary(body_html)
 
     posts.append({
@@ -143,56 +231,98 @@ for p in POSTS.glob("*.md"):
         "body_html": body_html,
         "summary": summary,
         "image": image_url,
-        "date": datetime.datetime.fromtimestamp(p.stat().st_mtime),
-        "src": p
+        "date": date,
     })
 
 posts.sort(key=lambda x: x["date"], reverse=True)
 
-# ----- BUILD OUTPUT -----
 shutil.rmtree(OUT, ignore_errors=True)
-OUT.mkdir()
+OUT.mkdir(parents=True, exist_ok=True)
 
-# ----- INDIVIDUAL POSTS -----
 for p in posts:
-    banner = f'<img class="banner" src="{p["image"]}">' if p["image"] else ""
-    body = f"<h1>{p['title']}</h1>{banner}\n{p['body_html']}"
+    banner = f'<img class="banner" src="{p["image"]}" alt="{html.escape(p["title"])}">' if p["image"] else ""
+    date_str = p["date"].strftime("%Y-%m-%d")
+    meta = f'<div class="post-meta">{date_str}</div>'
+    body = f"<h1>{p['title']}</h1>{meta}{banner}\n{p['body_html']}"
     body = body.replace('<a href="', '<a target="_blank" rel="nofollow noopener" href="')
     (OUT / f"{p['slug']}.html").write_text(
-        wrap(p["title"], body, p["summary"], p["image"])
+        wrap(p["title"], body, p["summary"], p["image"], p["slug"])
     )
 
-# ----- HOMEPAGE -----
-index_items = "\n".join(
-    f'<div class="card"><h2><a href="{p["slug"]}.html">{p["title"]}</a></h2>'
-    f'<p>{p["summary"]}</p></div>' for p in posts
-)
+index_items = ""
+for p in posts:
+    index_items += (
+        f'<div class="card">'
+        f'<h2><a href="{p["slug"]}.html">{p["title"]}</a></h2>'
+        f'<div class="post-meta">{p["date"].strftime("%Y-%m-%d")}</div>'
+        f'<p>{p["summary"]}</p>'
+        f'</div>'
+    )
+
+index_body = "<h1>Latest Posts</h1>" + index_items
 (OUT / "index.html").write_text(
-    wrap("Tech Blog", "<h1>Latest Posts</h1>" + index_items)
+    wrap("Tech Blog", index_body, "Practical tech tips and guides")
 )
 
-# ----- ARCHIVE -----
-archive_list = "\n".join(
-    f'<p><a href="{p["slug"]}.html">{p["title"]}</a></p>' for p in posts
-)
+archive_html = "<h1>Archive</h1><div class='archive-list'>"
+for p in posts:
+    archive_html += (
+        f'<p>{p["date"].strftime("%Y-%m-%d")} — '
+        f'<a href="{p["slug"]}.html">{p["title"]}</a></p>'
+    )
+archive_html += "</div>"
+
 (OUT / "archive.html").write_text(
-    wrap("Archive", "<h1>Archive</h1>" + archive_list)
+    wrap("Archive", archive_html, "Archive of all Tech Blog posts")
 )
 
-# ----- LATEST REDIRECT -----
-latest_slug = posts[0]["slug"]
-(OUT / "latest.html").write_text(
-    f'<meta http-equiv="refresh" content="0; url={latest_slug}.html">'
-)
+if posts:
+    latest_slug = posts[0]["slug"]
+    latest_html = f'<meta http-equiv="refresh" content="0; url={latest_slug}.html">'
+    (OUT / "latest.html").write_text(
+        wrap("Latest", latest_html, posts[0]["summary"], posts[0]["image"], latest_slug)
+    )
 
-# ----- SEARCH INDEX -----
 search_index = [
-    {"title": p["title"], "slug": p["slug"], "content": re.sub("<[^<]+?>", "", p["body_html"])}
+    {
+        "title": p["title"],
+        "slug": p["slug"],
+        "content": re.sub("<[^<]+?>", "", p["body_html"])
+    }
     for p in posts
 ]
 (OUT / "search.json").write_text(json.dumps(search_index))
 
-# ----- RSS FEED -----
+search_page = """<h1>Search</h1>
+<input id="q" class="search-input" placeholder="Type to search... (min 3 chars)">
+<div id="results"></div>
+<script>
+let indexData = [];
+fetch("search.json").then(r => r.json()).then(d => indexData = d);
+
+const q = document.getElementById("q");
+const resultsDiv = document.getElementById("results");
+
+q.addEventListener("input", e => {
+  const term = e.target.value.toLowerCase().trim();
+  if (term.length < 3) {
+    resultsDiv.innerHTML = "";
+    return;
+  }
+  let out = "";
+  indexData.forEach(p => {
+    if (p.title.toLowerCase().includes(term) || p.content.toLowerCase().includes(term)) {
+      out += `<div class='card'><h2><a href='${p.slug}.html'>${p.title}</a></h2></div>`;
+    }
+  });
+  resultsDiv.innerHTML = out || "<p>No results.</p>";
+});
+</script>
+"""
+(OUT / "search.html").write_text(
+    wrap("Search", search_page, "Search Tech Blog posts")
+)
+
 rss_items = "\n".join(
     f"<item><title>{p['title']}</title>"
     f"<link>https://oremm.github.io/Tech-Blog/{p['slug']}.html</link></item>"
