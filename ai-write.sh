@@ -8,11 +8,18 @@ RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
   -H "Authorization: Bearer $OPENAI_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{
+   "messages": [
+  {
+    "role": "system",
+    "content": "Write a 600-word tech post about home networking, Wi-Fi, or gadgets. Include 3 Amazon affiliate links using tag: '"$AMAZON_TAG"'. Use markdown. Start with # title. Write in a natural human blogger voice and do not mention AI, ChatGPT, language models, or that this text is generated. Then generate a DALL·E prompt for a featured image."
+  },
+  {
+    "role": "user",
+    "content": "Write today'\''s post and image prompt."
+  }
+],
     "model": "gpt-4o-mini",
-    "messages": [
-      {"role": "system", "content": "Write a 600-word tech post about home networking, Wi-Fi, or gadgets. Include 3 Amazon affiliate links using tag: '"$AMAZON_TAG"'. Use markdown. Start with # title. Then generate a DALL·E prompt for a featured image."},
-      {"role": "user", "content": "Write today'\''s post and image prompt."}
-    ],
+   
     "max_tokens": 1400
   }')
 
