@@ -1,3 +1,7 @@
+cd ~/ai-income/new-blog
+set +H
+
+cat > build.sh << 'EOF'
 #!/usr/bin/env python3
 import pathlib, datetime, re, markdown, json, shutil, html
 
@@ -206,6 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {{
 </html>
 """
 
+# ---- COLLECT POSTS ----
 posts = []
 for p in POSTS.glob("*.md"):
     raw = p.read_text().strip()
@@ -219,14 +224,13 @@ for p in POSTS.glob("*.md"):
     MD.reset()
     body_html = MD.convert(body_md)
 
-        img_match = re.search(r"!\[.*?\]\((.*?)\)", raw)
+    # Extract first image and only use real URLs as banner
+    img_match = re.search(r"!\[.*?\]\((.*?)\)", raw)
     image_url = ""
     if img_match:
         candidate = img_match.group(1).strip()
-        # Only treat as banner if it's a real-looking URL
         if candidate and candidate != "null" and candidate.startswith("http"):
             image_url = candidate
-
 
     date = datetime.datetime.fromtimestamp(p.stat().st_mtime)
     summary = extract_summary(body_html)
@@ -242,9 +246,11 @@ for p in POSTS.glob("*.md"):
 
 posts.sort(key=lambda x: x["date"], reverse=True)
 
+# ---- BUILD OUTPUT ----
 shutil.rmtree(OUT, ignore_errors=True)
 OUT.mkdir(parents=True, exist_ok=True)
 
+# Individual posts
 for p in posts:
     banner = f'<img class="banner" src="{p["image"]}" alt="{html.escape(p["title"])}">' if p["image"] else ""
     date_str = p["date"].strftime("%Y-%m-%d")
@@ -255,6 +261,7 @@ for p in posts:
         wrap(p["title"], body, p["summary"], p["image"], p["slug"])
     )
 
+# Index
 index_items = ""
 for p in posts:
     index_items += (
@@ -270,6 +277,7 @@ index_body = "<h1>Latest Posts</h1>" + index_items
     wrap("Tech Blog", index_body, "Practical tech tips and guides")
 )
 
+# Archive
 archive_html = "<h1>Archive</h1><div class='archive-list'>"
 for p in posts:
     archive_html += (
@@ -282,6 +290,7 @@ archive_html += "</div>"
     wrap("Archive", archive_html, "Archive of all Tech Blog posts")
 )
 
+# Latest
 if posts:
     latest_slug = posts[0]["slug"]
     latest_html = f'<meta http-equiv="refresh" content="0; url={latest_slug}.html">'
@@ -289,6 +298,7 @@ if posts:
         wrap("Latest", latest_html, posts[0]["summary"], posts[0]["image"], latest_slug)
     )
 
+# Search index + page
 search_index = [
     {
         "title": p["title"],
@@ -329,6 +339,7 @@ q.addEventListener("input", e => {
     wrap("Search", search_page, "Search Tech Blog posts")
 )
 
+# RSS
 rss_items = "\n".join(
     f"<item><title>{p['title']}</title>"
     f"<link>https://oremm.github.io/Tech-Blog/{p['slug']}.html</link></item>"
@@ -347,3 +358,6 @@ rss = f'''<?xml version="1.0"?>
 (OUT / "rss.xml").write_text(rss)
 
 print(f"Built {len(posts)} posts (FULL UPGRADE ACTIVE)")
+EOF
+
+chmod +x build.sh
