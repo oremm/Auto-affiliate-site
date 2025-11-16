@@ -1,0 +1,12 @@
+title: "Tech-Blog"
+theme: jekyll-theme-primer
+
+# GitHub Pages URL setup
+url: "https://oremm.github.io"
+baseurl: "/Tech-Blog"
+
+# Plugins that GitHub Pages supports
+plugins:
+  - jekyll-seo-tag
+  - jekyll-paginate
+  - jekyll-readme-index
