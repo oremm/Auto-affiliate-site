@@ -37,9 +37,13 @@ SLUG=$(echo "$TITLE" \
 
 DATE=$(date +%Y-%m-%d)
 
-POST=$(echo "$CONTENT" | sed "/DALL·E prompt:/,\$d")
-PROMPT=$(echo "$CONTENT" | sed -n "/DALL·E prompt:/,\$p" | tail -n +2)
+RAW=$(echo "$RESPONSE" | jq -r '.choices[0].message.content')
 
+# Extract post text (before the prompt)
+POST=$(echo "$RAW" | sed '/^DALL·E Image Prompt:/,$d')
+
+# Extract prompt itself
+PROMPT=$(echo "$RAW" | sed -n 's/^DALL·E Image Prompt: //p')
 POST_FILE="content/posts/${SLUG}-${DATE}.md"
 echo "$POST" > "$POST_FILE"
 
