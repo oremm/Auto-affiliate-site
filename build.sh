@@ -13,3 +13,4 @@ rm -rf docs/*
 
 # 3) Copy build output to docs/ for GitHub Pages
 cp -r public/* docs/
+./scripts/inject-seo.sh
