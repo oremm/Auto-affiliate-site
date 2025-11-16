@@ -73,7 +73,7 @@ items = [f'<p><a href="{p["slug"]}.html">{p["title"]}</a></p>' for p in unique]
 rss_items = "\n".join([f"<item><title>{p['title']}</title><link>https://oremm.github.io/Tech-Blog/{p['slug']}.html</link></item>" for p in unique[-10:]])
 rss = f'''<?xml version="1.0"?><rss version="2.0"><channel>
 <title>Tech-Blog</title><link>https://oremm.github.io/Tech-Blog/</link>
-<description>AI-powered tech tips</description>{rss_items}</channel></rss>'''
+<description>Prectical tech tips</description>{rss_items}</channel></rss>'''
 (OUT / "rss.xml").write_text(rss)
 
 print(f"Built {len(unique)} unique posts")
