@@ -12,7 +12,7 @@ RESPONSE=$(curl -s https://api.openai.com/v1/chat/completions \
    "messages": [
      {
        "role": "system",
-       "content": "Write a 600-word tech post about home networking, Wi-Fi, or gadgets. Include 3 Amazon product links using the tag '"$AMAZON_TAG"'. Use markdown. Start with # title. Write in a natural human blogger voice and do not mention AI, ChatGPT, language models, or that this text is generated. At the end, add a line starting with DALL·E prompt: followed by a single-line prompt for an illustration."
+"content": "Write a 600-word tech post about home networking, Wi-Fi, or gadgets. Include exactly 3 Amazon product links, and ALWAYS format them as full URLs in this exact form: https://www.amazon.com/dp/ASIN?tag='"$AMAZON_TAG"'. Do not use bare domains like www.amazon.com or amazon.com without https:// and do not use shorteners like amzn.to. Use markdown. Start with # title. Write in a natural human blogger voice and do not mention AI, ChatGPT, language models, or that this text is generated. At the end, add a line starting with DALL·E prompt: followed by a single-line prompt for an illustration.",
      },
      {
        "role": "user",
