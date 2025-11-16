@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% if page.title %}{{ page.title }} · {{ site.title }}{% else %}{{ site.title }}{% endif %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+      :root {
+        --bg: #0b1220;
+        --fg: #ffffff;
+        --card: #111a2b;
+        --accent: #87d0ff;
+      }
+      [data-theme='light'] {
+        --bg: #f8f8f8;
+        --fg: #111111;
+        --card: #ffffff;
+        --accent: #005bbb;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+        background: var(--bg);
+        color: var(--fg);
+      }
+      a {
+        color: var(--accent);
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .wrap {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 18px 18px 32px;
+      }
+      nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 16px;
+        gap: 12px;
+      }
+      .nav-left a {
+        margin-right: 14px;
+      }
+      .nav-left strong {
+        font-size: 1.1rem;
+      }
+      button.theme {
+        background: transparent;
+        border: 1px solid var(--accent);
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 0.9rem;
+        color: var(--accent);
+        cursor: pointer;
+      }
+      button.theme:hover {
+        background: rgba(135, 208, 255, 0.1);
+      }
+      .card {
+        background: var(--card);
+        padding: 22px 22px 20px;
+        border-radius: 18px;
+        margin: 18px 0;
+        box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+      }
+      h1 {
+        margin-top: 0;
+        margin-bottom: 0.6rem;
+        font-size: 1.7rem;
+      }
+      h2 {
+        margin-top: 0;
+        margin-bottom: 0.4rem;
+        font-size: 1.3rem;
+      }
+      .banner {
+        width: 100%;
+        border-radius: 16px;
+        margin: 10px 0 18px;
+      }
+      footer.small {
+        opacity: 0.8;
+      }
+      .post-meta {
+        font-size: 0.8rem;
+        opacity: 0.85;
+        margin-bottom: 0.4rem;
+      }
+      .archive-list p {
+        margin: 0.3rem 0;
+      }
+      .search-input {
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 10px;
+        border: 1px solid #444;
+        background: transparent;
+        color: var(--fg);
+        outline: none;
+        margin-bottom: 14px;
+      }
+    </style>
+
+    <script>
+      function toggleTheme() {
+        const root = document.documentElement;
+        const current = root.getAttribute("data-theme") || "dark";
+        const next = current === "light" ? "dark" : "light";
+        root.setAttribute("data-theme", next);
+        localStorage.setItem("theme", next);
+      }
+      document.addEventListener("DOMContentLoaded", () => {
+        const saved = localStorage.getItem("theme");
+        if (saved) document.documentElement.setAttribute("data-theme", saved);
+      });
+    </script>
+  </head>
+  <body>
+    <div class="wrap">
+      <nav>
+        <div class="nav-left">
+          <a href="{{ '/' | relative_url }}"><strong>Tech Blog</strong></a>
+          <a href="{{ '/' | relative_url }}">Latest</a>
+          <a href="{{ '/archive.html' | relative_url }}">Archive</a>
+          <a href="{{ '/search.html' | relative_url }}">Search</a>
+        </div>
+        <div class="nav-right">
+          <button class="theme" onclick="toggleTheme()">Theme</button>
+        </div>
+      </nav>
+
+      <main>
+        <div class="card">
+          {{ content }}
+        </div>
+      </main>
+
+      <footer class="small">
+        <p>© {{ site.time | date: '%Y' }} Tech Blog</p>
+      </footer>
+    </div>
+  </body>
+</html>
