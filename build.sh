@@ -1,7 +1,3 @@
-cd ~/ai-income/new-blog
-set +H
-
-cat > build.sh << 'EOF'
 #!/usr/bin/env python3
 import pathlib, datetime, re, markdown, json, shutil, html
 
@@ -358,6 +354,3 @@ rss = f'''<?xml version="1.0"?>
 (OUT / "rss.xml").write_text(rss)
 
 print(f"Built {len(posts)} posts (FULL UPGRADE ACTIVE)")
-EOF
-
-chmod +x build.sh
